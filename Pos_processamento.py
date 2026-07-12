@@ -156,15 +156,17 @@ imagem = con_imagem
 
 #print("Imagem com grupos selecionados\n",imagem)
 
+
+
+for conv in arrconv:
+    convrem = HitMiss(imagem,conv)
+    imagem = imagem - convrem
+
 for conc in arrconc:
     concrem = HitMiss(imagem,conc)
     imagem = imagem + concrem
 
 #print("Imagem sem concavidades\n", imagem)
-
-for conv in arrconv:
-    convrem = HitMiss(imagem,conv)
-    imagem = imagem - convrem
 
 imagem_final = imagem
 
