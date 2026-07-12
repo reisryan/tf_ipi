@@ -104,7 +104,10 @@ arrconc = [arrconcU,arrconcD,arrconcL,arrconcR]
 def HitMiss(img,shape):
     return cv2.morphologyEx(img, cv2.MORPH_HITMISS, shape)
 
-print("Imagem Original\n",(testimg * 255).astype(np.uint8))
+#print("Imagem Original\n",(testimg * 255).astype(np.uint8))
+plt.imshow((testimg * 255).astype(np.uint8),cmap="gray")
+plt.show()
+
 imagem = (testimg * 255).astype(np.uint8)
 dotimg = HitMiss(imagem,arrDot)
 ##print("Dot\n", dotimg)
@@ -165,4 +168,7 @@ for conv in arrconv:
 
 imagem_final = imagem
 
-print("Imagem Final\n", imagem_final)
+#print("Imagem Final\n",imagem_final)
+plt.imshow(imagem_final.astype(np.uint8),cmap="gray")
+#plt.imsave('CerebroRemovido.jpg',tumor_removido, cmap='gray')
+plt.show()
