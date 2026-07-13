@@ -2,6 +2,84 @@ import cv2 as cv
 import numpy as np
 from skimage.filters import threshold_multiotsu
 import os
+import matplotlib.pyplot as plt
+import statistics
+
+
+# ==============================================================================
+# 0. Kernels usados no hit-miss do pós processamento
+# ==============================================================================
+
+
+arrGap = np.array([[-1, -1, -1], 
+                        [-1, 1, -1], 
+                        [-1, -1, -1]], dtype=np.float32)  # Array de gap
+
+arrDot = np.array([[1, 1, 1], 
+                    [1, -1, 1], 
+                    [1, 1, 1]], dtype=np.float32)  # Array de detectar 
+
+arrconvU =  np.array([
+                    [0, 0, 0, 0, 0,],
+                    [0,1,1,1, 0], 
+                    [0,1, -1,1, 0], 
+                    [0, -1, -1, -1, 0],
+                    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconvD =  np.array([
+                    [0, -1, -1, -1, 0],
+                    [0, -1, -1, -1, 0], 
+                    [0,1, -1,1, 0], 
+                    [0,1,1,1, 0],
+                    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
+
+
+arrconvL =  np.array([
+                    [0, 0, 0, 0, 0],
+                    [0,1,1, -1, -1], 
+                    [0,1, -1, -1, -1], 
+                    [0,1,1, -1, -1],
+                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconvR =  np.array([
+                    [0, 0, 0, 0, 0],
+                    [-1, -1,1,1, 0], 
+                    [-1, -1, -1,1, 0], 
+                    [-1, -1,1,1, 0],
+                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconv = [arrconvU,arrconvD,arrconvL,arrconvR]
+
+arrconcU =  np.array([
+                    [0, 0, 0, 0, 0,],
+                    [0,1,1,1, 0], 
+                    [0, -1,1, -1, 0], 
+                    [0, -1, -1, -1, 0],
+                    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconcD =  np.array([
+                    [0, -1, -1, -1, 0],
+                    [0, -1, -1, -1, 0], 
+                    [0, -1,1, -1, 0], 
+                    [0,1,1,1, 0],
+                    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
+
+
+arrconcL =  np.array([
+                    [0, 0, 0, 0, 0],
+                    [0,1, -1, -1, -1], 
+                    [0,1,1, -1, -1], 
+                    [0,1, -1, -1, -1],
+                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconcR =  np.array([
+                    [0, 0, 0, 0, 0],
+                    [-1, -1,1,1, 0], 
+                    [-1, -1,-1,1, 0], 
+                    [-1, -1,1,1, 0],
+                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconc = [arrconcU,arrconcD,arrconcL,arrconcR]
 
 # ==============================================================================
 # 1. CRIAÇÃO DA PASTA DE RESULTADOS E LEITURA DA IMAGEM
@@ -10,7 +88,7 @@ import os
 output_dir = './resultados_binarizacao_nick'
 os.makedirs(output_dir, exist_ok=True)
 
-image_path = './DIBC02009_Test_images-handwritten/H04.bmp'
+image_path = './DIBC02009_Test_images-handwritten/H01.bmp'
 
 # Leitura da imagem e conversão para escala de cinza.
 # O casting para float32 (gf) é necessário para evitar estouro de memória (overflow/underflow)
@@ -172,12 +250,93 @@ smear_mask = cv.dilate(smear_mask, kernel_dilate_mask, iterations=1)
 # - Nas áreas limpas de fundo (fundo normal), preserva-se o resultado da binarização global.
 img_b2 = np.where(smear_mask == 255, img_nick, img_binarizada)
 
+
+def HitMiss(img,shape):
+    return cv.morphologyEx(img, cv.MORPH_HITMISS, shape)
+
 # ==============================================================================
-# 6. SALVAMENTO DOS RESULTADOS
+# 7. Pós processamento
+# ==============================================================================
+
+
+imagem_pos = cv.bitwise_not(img_b2)
+imagem_inversa = imagem_pos
+
+# Remove pixels do foreground cercados por background
+dotimg = HitMiss(imagem_pos,arrDot)
+imagem_pos = imagem_pos - dotimg
+
+# Remove pixels individuais do background cercados por foreground
+gapimg = HitMiss(imagem_pos,arrGap)
+imagem_pos = imagem_pos + gapimg
+
+# Encontra os componentes conexos
+num_labels, labels, stats, centroids = cv.connectedComponentsWithStats(imagem_pos, connectivity=8)
+
+
+pixel_dict = {}
+for label in range(num_labels):
+    if (label != 0):
+        pixel_dict[label] = 0
+
+# Conta o número de pixels em cada componente
+for row in labels:
+    for pixel in row:
+        if pixel != 0:
+            pixel_dict[pixel] += 1
+
+valuelist = []
+
+# Valor lambda utilizado na função de detectar "manchas"
+lamb = 45
+
+# Calcula a média e desvio padrão dos componentes
+values = list(pixel_dict.values())
+mean = statistics.mean(values)
+std_dev = statistics.stdev(values)
+
+# Mantém apenas os componentes de áreas menores que essa expressão
+keep_labels = []
+for label, count in pixel_dict.items():
+    if count > (lamb*mean)/std_dev:
+        keep_labels.append(label)
+
+print(pixel_dict.items(),"\n\n",mean,std_dev)
+print()
+print(keep_labels)
+
+# Normaliza para 255 o que é para ser mantido,e para 0 caso contrário
+for row in labels:
+    for pos,pixel in enumerate(row):
+        if pixel in keep_labels:
+            row[pos] = 255
+        else:
+            row[pos] = 0
+
+con_imagem = cv.bitwise_not(labels.astype(np.uint8))
+imagem_pos = con_imagem
+
+# Remove concavidades de 1 pixel
+for conv in arrconv:
+    convrem = HitMiss(imagem_pos,conv)
+    imagem_pos = imagem_pos - convrem
+
+# Remove convexidades de 1 pixel
+for conc in arrconc:
+    concrem = HitMiss(imagem_pos,conc)
+    imagem_pos = imagem_pos + concrem
+
+
+imagem_final = imagem_pos
+
+
+
+# ==============================================================================
+# 7. SALVAMENTO DOS RESULTADOS
 # ==============================================================================
 base_name = os.path.basename(image_path).split('.')[0]
 cv.imwrite(os.path.join(output_dir, f"{base_name}_01_Original_Gray.png"), gray)
 cv.imwrite(os.path.join(output_dir, f"{base_name}_02_Binarizada_global.png"), img_binarizada)
 cv.imwrite(os.path.join(output_dir, f"{base_name}_03_Binarizada_Nick.png"), img_b2)
-
+cv.imwrite(os.path.join(output_dir, f"{base_name}_04_Pos_Processada.png"), imagem_final)
 print(f"Resultados salvos com sucesso na pasta: {output_dir}")
