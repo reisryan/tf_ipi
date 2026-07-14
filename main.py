@@ -11,75 +11,75 @@ import statistics
 # ==============================================================================
 
 
-arrGap = np.array([[-1, -1, -1], 
-                        [-1, 1, -1], 
-                        [-1, -1, -1]], dtype=np.float32)  # Array de gap
+arrGap = np.array([[-1, -1, -1],
+                   [-1, 1, -1],
+                   [-1, -1, -1]], dtype=np.float32)  # Array de gap
 
-arrDot = np.array([[1, 1, 1], 
-                    [1, -1, 1], 
-                    [1, 1, 1]], dtype=np.float32)  # Array de detectar 
+arrDot = np.array([[1, 1, 1],
+                   [1, -1, 1],
+                   [1, 1, 1]], dtype=np.float32)  # Array de detectar
 
-arrconvU =  np.array([
-                    [0, 0, 0, 0, 0,],
-                    [0,1,1,1, 0], 
-                    [0,1, -1,1, 0], 
-                    [0, -1, -1, -1, 0],
-                    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
+arrconvU = np.array([
+    [0, 0, 0, 0, 0,],
+    [0, 1, 1, 1, 0],
+    [0, 1, -1, 1, 0],
+    [0, -1, -1, -1, 0],
+    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
 
-arrconvD =  np.array([
-                    [0, -1, -1, -1, 0],
-                    [0, -1, -1, -1, 0], 
-                    [0,1, -1,1, 0], 
-                    [0,1,1,1, 0],
-                    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
-
-
-arrconvL =  np.array([
-                    [0, 0, 0, 0, 0],
-                    [0,1,1, -1, -1], 
-                    [0,1, -1, -1, -1], 
-                    [0,1,1, -1, -1],
-                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
-
-arrconvR =  np.array([
-                    [0, 0, 0, 0, 0],
-                    [-1, -1,1,1, 0], 
-                    [-1, -1, -1,1, 0], 
-                    [-1, -1,1,1, 0],
-                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
-
-arrconv = [arrconvU,arrconvD,arrconvL,arrconvR]
-
-arrconcU =  np.array([
-                    [0, 0, 0, 0, 0,],
-                    [0,1,1,1, 0], 
-                    [0, -1,1, -1, 0], 
-                    [0, -1, -1, -1, 0],
-                    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
-
-arrconcD =  np.array([
-                    [0, -1, -1, -1, 0],
-                    [0, -1, -1, -1, 0], 
-                    [0, -1,1, -1, 0], 
-                    [0,1,1,1, 0],
-                    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
+arrconvD = np.array([
+    [0, -1, -1, -1, 0],
+    [0, -1, -1, -1, 0],
+    [0, 1, -1, 1, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
 
 
-arrconcL =  np.array([
-                    [0, 0, 0, 0, 0],
-                    [0,1, -1, -1, -1], 
-                    [0,1,1, -1, -1], 
-                    [0,1, -1, -1, -1],
-                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+arrconvL = np.array([
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, -1, -1],
+    [0, 1, -1, -1, -1],
+    [0, 1, 1, -1, -1],
+    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
 
-arrconcR =  np.array([
-                    [0, 0, 0, 0, 0],
-                    [-1, -1,1,1, 0], 
-                    [-1, -1,-1,1, 0], 
-                    [-1, -1,1,1, 0],
-                    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+arrconvR = np.array([
+    [0, 0, 0, 0, 0],
+    [-1, -1, 1, 1, 0],
+    [-1, -1, -1, 1, 0],
+    [-1, -1, 1, 1, 0],
+    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
 
-arrconc = [arrconcU,arrconcD,arrconcL,arrconcR]
+arrconv = [arrconvU, arrconvD, arrconvL, arrconvR]
+
+arrconcU = np.array([
+    [0, 0, 0, 0, 0,],
+    [0, 1, 1, 1, 0],
+    [0, -1, 1, -1, 0],
+    [0, -1, -1, -1, 0],
+    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconcD = np.array([
+    [0, -1, -1, -1, 0],
+    [0, -1, -1, -1, 0],
+    [0, -1, 1, -1, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
+
+
+arrconcL = np.array([
+    [0, 0, 0, 0, 0],
+    [0, 1, -1, -1, -1],
+    [0, 1, 1, -1, -1],
+    [0, 1, -1, -1, -1],
+    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconcR = np.array([
+    [0, 0, 0, 0, 0],
+    [-1, -1, 1, 1, 0],
+    [-1, -1, -1, 1, 0],
+    [-1, -1, 1, 1, 0],
+    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+
+arrconc = [arrconcU, arrconcD, arrconcL, arrconcR]
 
 # ==============================================================================
 # 1. CRIAÇÃO DA PASTA DE RESULTADOS E LEITURA DA IMAGEM
@@ -88,7 +88,7 @@ arrconc = [arrconcU,arrconcD,arrconcL,arrconcR]
 output_dir = './resultados_binarizacao_nick'
 os.makedirs(output_dir, exist_ok=True)
 
-image_path = './DIBC02009_Test_images-handwritten/H01.bmp'
+image_path = './DIBC02009_Test_images-handwritten/H05.bmp'
 
 # Leitura da imagem e conversão para escala de cinza.
 # O casting para float32 (gf) é necessário para evitar estouro de memória (overflow/underflow)
@@ -119,7 +119,7 @@ diferenca = local_max - local_min
 e = 1e-6
 
 local_contrast_map = np.zeros_like(gf)
-mask = soma > 0 
+mask = soma > 0
 local_contrast_map[mask] = diferenca[mask] / (soma[mask] + e)
 
 # Média global do contraste de Michelson local para classificar o nível de contraste da imagem.
@@ -136,7 +136,7 @@ if final_local_contrast < 0.02:
 # 3. SELEÇÃO DA LIMIARIZAÇÃO GLOBAL BASEADA EM CONTRASTE (DECISÃO DINÂMICA)
 # ==============================================================================
 # Aqui define-se qual algoritmo de binarização global é mais adequado com base
-# no contraste local estimado. É utilizado o algoritmo Multi-Otsu (com 3 classes, 
+# no contraste local estimado. É utilizado o algoritmo Multi-Otsu (com 3 classes,
 # gerando 2 limiares: lim[0] e lim[1]) e o Otsu padrão de 2 classes (TO).
 
 T01, T02, T03 = 0.03, 0.04, 0.085
@@ -150,10 +150,11 @@ elif final_local_contrast <= T02:
     # Cenário de contraste muito baixo: Analisa a distribuição de pixels entre o
     # limiar de Otsu clássico (TO) e o limiar Multi-Otsu superior (lim[1]).
     # Se a diferença de limiares for razoável (Dmin a Dmax) e o número de pixels
-    # na faixa intermediária (nb) for pequeno em relação ao fundo (nb_1), 
+    # na faixa intermediária (nb) for pequeno em relação ao fundo (nb_1),
     # utiliza-se lim[1]; caso contrário, mantém-se o Otsu padrão (TO).
     Dmin, Dmax, P = 5, 25, 0.5
-    _, thresh_otsu = cv.threshold(gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    _, thresh_otsu = cv.threshold(
+        gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
     TO = thresh_otsu
     nb = np.sum((gray > TO) & (gray <= lim[1]))
     nb_1 = np.sum(gray <= TO)
@@ -165,7 +166,8 @@ elif final_local_contrast <= T02:
         _, img_binarizada = cv.threshold(gray, TO, 255, cv.THRESH_BINARY)
 elif final_local_contrast <= T03:
     # Cenário de contraste moderado: Aplica o algoritmo clássico de Otsu (limiar global ideal).
-    _, img_binarizada = cv.threshold(gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    _, img_binarizada = cv.threshold(
+        gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
 else:
     # Cenário de contraste alto: Adota o limiar Multi-Otsu inferior (lim[0])
     # para evitar a inclusão de ruídos de fundo como parte do objeto binarizado.
@@ -224,7 +226,8 @@ for y in range(0, h, ws):
         block = img_binarizada[y:y+ws, x:x+ws]
         tp = block.size
         if tp > 0:
-            bp = np.sum(block == 0)      # Quantidade de pixels pretos no bloco.
+            # Quantidade de pixels pretos no bloco.
+            bp = np.sum(block == 0)
             fS = bp / tp                 # Fração de pixels pretos (densidade).
             fSlist.append(fS)
             blockscoords.append((y, x, fS, block.shape))
@@ -251,7 +254,7 @@ smear_mask = cv.dilate(smear_mask, kernel_dilate_mask, iterations=1)
 img_b2 = np.where(smear_mask == 255, img_nick, img_binarizada)
 
 
-def HitMiss(img,shape):
+def HitMiss(img, shape):
     return cv.morphologyEx(img, cv.MORPH_HITMISS, shape)
 
 # ==============================================================================
@@ -263,15 +266,16 @@ imagem_pos = cv.bitwise_not(img_b2)
 imagem_inversa = imagem_pos
 
 # Remove pixels do foreground cercados por background
-dotimg = HitMiss(imagem_pos,arrDot)
+dotimg = HitMiss(imagem_pos, arrDot)
 imagem_pos = imagem_pos - dotimg
 
 # Remove pixels individuais do background cercados por foreground
-gapimg = HitMiss(imagem_pos,arrGap)
+gapimg = HitMiss(imagem_pos, arrGap)
 imagem_pos = imagem_pos + gapimg
 
 # Encontra os componentes conexos
-num_labels, labels, stats, centroids = cv.connectedComponentsWithStats(imagem_pos, connectivity=8)
+num_labels, labels, stats, centroids = cv.connectedComponentsWithStats(
+    imagem_pos, connectivity=8)
 
 
 pixel_dict = {}
@@ -301,13 +305,13 @@ for label, count in pixel_dict.items():
     if count > (lamb*mean)/std_dev:
         keep_labels.append(label)
 
-print(pixel_dict.items(),"\n\n",mean,std_dev)
+print(pixel_dict.items(), "\n\n", mean, std_dev)
 print()
 print(keep_labels)
 
 # Normaliza para 255 o que é para ser mantido,e para 0 caso contrário
 for row in labels:
-    for pos,pixel in enumerate(row):
+    for pos, pixel in enumerate(row):
         if pixel in keep_labels:
             row[pos] = 255
         else:
@@ -318,17 +322,16 @@ imagem_pos = con_imagem
 
 # Remove concavidades de 1 pixel
 for conv in arrconv:
-    convrem = HitMiss(imagem_pos,conv)
+    convrem = HitMiss(imagem_pos, conv)
     imagem_pos = imagem_pos - convrem
 
 # Remove convexidades de 1 pixel
 for conc in arrconc:
-    concrem = HitMiss(imagem_pos,conc)
+    concrem = HitMiss(imagem_pos, conc)
     imagem_pos = imagem_pos + concrem
 
 
 imagem_final = imagem_pos
-
 
 
 # ==============================================================================
@@ -336,7 +339,10 @@ imagem_final = imagem_pos
 # ==============================================================================
 base_name = os.path.basename(image_path).split('.')[0]
 cv.imwrite(os.path.join(output_dir, f"{base_name}_01_Original_Gray.png"), gray)
-cv.imwrite(os.path.join(output_dir, f"{base_name}_02_Binarizada_global.png"), img_binarizada)
-cv.imwrite(os.path.join(output_dir, f"{base_name}_03_Binarizada_Nick.png"), img_b2)
-cv.imwrite(os.path.join(output_dir, f"{base_name}_04_Pos_Processada.png"), imagem_final)
+cv.imwrite(os.path.join(
+    output_dir, f"{base_name}_02_Binarizada_global.png"), img_binarizada)
+cv.imwrite(os.path.join(
+    output_dir, f"{base_name}_03_Binarizada_Nick.png"), img_b2)
+cv.imwrite(os.path.join(
+    output_dir, f"{base_name}_04_Pos_Processada.png"), imagem_final)
 print(f"Resultados salvos com sucesso na pasta: {output_dir}")
