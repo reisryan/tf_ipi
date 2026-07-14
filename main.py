@@ -88,7 +88,7 @@ arrconc = [arrconcU, arrconcD, arrconcL, arrconcR]
 output_dir = './resultados_binarizacao_nick'
 os.makedirs(output_dir, exist_ok=True)
 
-image_path = './DIBC02009_Test_images-handwritten/H05.bmp'
+image_path = './DIBC02009_Test_images-handwritten/H04.bmp'
 
 # Leitura da imagem e conversão para escala de cinza.
 # O casting para float32 (gf) é necessário para evitar estouro de memória (overflow/underflow)
@@ -153,9 +153,9 @@ elif final_local_contrast <= T02:
     # na faixa intermediária (nb) for pequeno em relação ao fundo (nb_1),
     # utiliza-se lim[1]; caso contrário, mantém-se o Otsu padrão (TO).
     Dmin, Dmax, P = 5, 25, 0.5
-    _, thresh_otsu = cv.threshold(
-        gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-    TO = thresh_otsu
+    _, thresh_otsu = cv.threshold(gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    print (_, thresh_otsu)
+    TO = _
     nb = np.sum((gray > TO) & (gray <= lim[1]))
     nb_1 = np.sum(gray <= TO)
     d = abs(lim[1] - TO)
