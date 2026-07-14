@@ -153,12 +153,12 @@ elif final_local_contrast <= T02:
     # na faixa intermediária (nb) for pequeno em relação ao fundo (nb_1),
     # utiliza-se lim[1]; caso contrário, mantém-se o Otsu padrão (TO).
     Dmin, Dmax, P = 5, 25, 0.5
-    _, thresh_otsu = cv.threshold(gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-    print (_, thresh_otsu)
+    lim2, thresh_otsu = cv.threshold(gray, 0, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
+    
     TO = _
     nb = np.sum((gray > TO) & (gray <= lim[1]))
     nb_1 = np.sum(gray <= TO)
-    d = abs(lim[1] - TO)
+    d = abs(lim[1] - lim2)
 
     if (Dmin <= d <= Dmax) and (nb <= (P*nb_1)):
         _, img_binarizada = cv.threshold(gray, lim[1], 255, cv.THRESH_BINARY)
