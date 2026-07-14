@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.7.14)  14 JUL 2026 11:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.7.14)  14 JUL 2026 11:18
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -348,15 +348,15 @@ Package grfext Info: Graphics extension search list:
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 Package babel Info: Main language set to 'portuguese'.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 51.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 54.
  (C:\Users\VGF\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 51.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 54.
  (C:\Users\VGF\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 10000) in paragraph at lines 51--52
+Underfull \hbox (badness 10000) in paragraph at lines 54--55
 []\T1/ptm/m/n/10 Para tra-tar ima-gens com ilu-mi-na-ção de-fi-ci-ente,
  []
 
@@ -364,25 +364,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 51--52
 
 
 ]
-<resultados_binarizacao_nick/H05_01_Original_Gray.png, id=16, 1346.02875pt x 715.67375pt>
+<resultados_binarizacao_nick/H05_01_Original_Gray.png, id=14, 1346.02875pt x 715.67375pt>
 File: resultados_binarizacao_nick/H05_01_Original_Gray.png Graphic file (type png)
 <use resultados_binarizacao_nick/H05_01_Original_Gray.png>
-Package pdftex.def Info: resultados_binarizacao_nick/H05_01_Original_Gray.png  used on input line 92.
+Package pdftex.def Info: resultados_binarizacao_nick/H05_01_Original_Gray.png  used on input line 95.
 (pdftex.def)             Requested size: 120.95892pt x 64.30957pt.
-<resultados_binarizacao_nick/H05_02_Binarizada_global.png, id=17, 1346.02875pt x 715.67375pt>
+<resultados_binarizacao_nick/H05_02_Binarizada_global.png, id=15, 1346.02875pt x 715.67375pt>
 File: resultados_binarizacao_nick/H05_02_Binarizada_global.png Graphic file (type png)
 <use resultados_binarizacao_nick/H05_02_Binarizada_global.png>
-Package pdftex.def Info: resultados_binarizacao_nick/H05_02_Binarizada_global.png  used on input line 99.
+Package pdftex.def Info: resultados_binarizacao_nick/H05_02_Binarizada_global.png  used on input line 102.
 (pdftex.def)             Requested size: 120.95892pt x 64.30957pt.
-<resultados_binarizacao_nick/H05_03_Binarizada_Nick.png, id=18, 1346.02875pt x 715.67375pt>
+<resultados_binarizacao_nick/H05_03_Binarizada_Nick.png, id=16, 1346.02875pt x 715.67375pt>
 File: resultados_binarizacao_nick/H05_03_Binarizada_Nick.png Graphic file (type png)
 <use resultados_binarizacao_nick/H05_03_Binarizada_Nick.png>
-Package pdftex.def Info: resultados_binarizacao_nick/H05_03_Binarizada_Nick.png  used on input line 107.
+Package pdftex.def Info: resultados_binarizacao_nick/H05_03_Binarizada_Nick.png  used on input line 110.
 (pdftex.def)             Requested size: 120.95892pt x 64.30957pt.
-<resultados_binarizacao_nick/H05_04_Pos_Processada.png, id=19, 1346.02875pt x 715.67375pt>
+<resultados_binarizacao_nick/H05_04_Pos_Processada.png, id=17, 1346.02875pt x 715.67375pt>
 File: resultados_binarizacao_nick/H05_04_Pos_Processada.png Graphic file (type png)
 <use resultados_binarizacao_nick/H05_04_Pos_Processada.png>
-Package pdftex.def Info: resultados_binarizacao_nick/H05_04_Pos_Processada.png  used on input line 114.
+Package pdftex.def Info: resultados_binarizacao_nick/H05_04_Pos_Processada.png  used on input line 117.
 (pdftex.def)             Requested size: 120.95892pt x 64.30957pt.
  [2 <./resultados_binarizacao_nick/H05_01_Original_Gray.png (PNG copy)> <./resultados_binarizacao_nick/H05_02_Binarizada_global.png (PNG copy)> <./resultados_binarizacao_nick/H05_03_Binarizada_Nick.png (PNG copy)> <./resultados_binarizacao_nick/H05_04_Pos_Processada.png (PNG copy)>]
 
@@ -413,7 +413,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  59i,8n,67p,858b,620s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on relatorio.pdf (3 pages, 499727 bytes).
+Output written on relatorio.pdf (3 pages, 499991 bytes).
 PDF statistics:
  72 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

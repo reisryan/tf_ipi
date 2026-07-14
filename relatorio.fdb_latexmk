@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1784038026.07164 "c:/Users/VGF/Documents/UnB/26.1/IPI/tf_ipi/relatorio.tex" "relatorio.pdf" "relatorio" 1784038026.94567 0
+["pdflatex"] 1784038681.20594 "c:/Users/VGF/Documents/UnB/26.1/IPI/tf_ipi/relatorio.tex" "relatorio.pdf" "relatorio" 1784038681.98377 0
   "C:/Users/VGF/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1784035242 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/VGF/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1784033018 13366090 f7591dc8e2847076fe2735396e2531e1 ""
   "C:/Users/VGF/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -87,9 +87,9 @@
   "C:/Users/VGF/AppData/Local/Programs/MiKTeX/tex/latex/psnfss/ot1ptm.fd" 1585253778 1007 15056f4a61917ceed3a44e4ac11fcc52 ""
   "C:/Users/VGF/AppData/Local/Programs/MiKTeX/tex/latex/psnfss/t1ptm.fd" 1585253778 817 61d7da1e9f9e74989b196d147e623736 ""
   "C:/Users/VGF/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "c:/Users/VGF/Documents/UnB/26.1/IPI/tf_ipi/relatorio.tex" 1784038024 11875 5641279ddffab709f59fa5315506cb22 ""
-  "relatorio.aux" 1784038026 2356 703c2d24e0b5ef2ec00a4082041ac8bb "pdflatex"
-  "relatorio.tex" 1784038024 11875 5641279ddffab709f59fa5315506cb22 ""
+  "c:/Users/VGF/Documents/UnB/26.1/IPI/tf_ipi/relatorio.tex" 1784038679 11997 908a79a0a0b0400bf485c7428442a6b7 ""
+  "relatorio.aux" 1784038681 2356 55e8f47b28e98f188e4c806c5a60387b "pdflatex"
+  "relatorio.tex" 1784038679 11997 908a79a0a0b0400bf485c7428442a6b7 ""
   "resultados_binarizacao_nick/H05_01_Original_Gray.png" 1784030226 306674 ab3f9e8be4d8b08de92918a91e230a80 ""
   "resultados_binarizacao_nick/H05_02_Binarizada_global.png" 1784030226 10530 8d02eddc34dc7e40f7dc166a9b54f098 ""
   "resultados_binarizacao_nick/H05_03_Binarizada_Nick.png" 1784030226 19684 97821f4dea4c2d5ef476517911cc346c ""
