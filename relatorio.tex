@@ -43,9 +43,11 @@ Image Processing, Hybrid Binarization, Historical Documents, Otsu, Nick's Method
 \selectlanguage{portuguese}
 
 \section{Introdução}
-A binarização de imagens de documentos é uma etapa primordial e crítica em muitos sistemas de análise e reconhecimento de documentos. O processo de separação entre os objetos pertinentes (texto) e o fundo do documento é frequentemente dificultado por degradações comuns em documentos históricos, tais como iluminação não uniforme, manchas, variações no contraste e caracteres desbotados.
+A binarização de imagens de documentos é uma etapa importante e crítica em muitos sistemas de análise e reconhecimento de documentos, devido a  sua importância para transcrever imagens em níveis de cinza em representações binárias que facilitem tarefas de sistemas de reconhecimento óptico de caracteres (OCR), indexação e preservação digital de documentos. Em documentos históricos, esse processamento é dificultado por degradações típicas: iluminação não uniforme, manchas, vazamento de tinta, variações de contraste e caracteres parcialmente apagados; o que compromete a legilibilidade de algorítmos de reconhecimento, tanto quanto compromete a segmentação do texto. Esta binarização é salutar, devido sua influência sobre todo o processo de segmentação - influenciando a extração de características, leitura e preservação - erros que permaneçam na binarização se propagam na segmentação.
 
-Este trabalho consiste na reprodução e adaptação da metodologia proposta por Boudraa et al. (2019) \cite{boudraa2019}, que sugere um sistema de binarização em múltiplas fases (pré-processamento, binarização híbrida e pós-processamento). No entanto, para fins de melhoria de desempenho e adequação das ferramentas disponíveis, foram implementadas modificações estratégicas na lógica de limiarização global e nas operações de pós-processamento, buscando resultados superiores no tratamento de ruídos e artefatos específicos das imagens utilizadas no conjunto de testes.
+Na literatura de reconhecimento óptico de caracteres, existem abordagens consideradas globais e propostas híbridas que combinam pré-processamento, limiarização e pós-processamento para lidar com regiões da imagem com fatores que dificultariam o reconhecimento óptico pelos algoritmos. Observe-se que o uso de uma abordagem híbrida favorece satisfazer determinados parâmetros que satisfaçam maior legibilidade de acordo com determinados parâmetros, a citar, o contraste.
+
+O presente trabalho consiste na reprodução da metodologia proposta por Boudraa et al. (2019) \cite{boudraa2019}, que sugere um sistema de binarização em múltiplas fases (pré-processamento, binarização híbrida seguida de pós-processamento). Contudo, para fins de melhoria de desempenho e adequação das ferramentas disponíveis, foram implementadas modificações estratégicas na lógica de limiarização global e nas operações de pós-processamento, buscando resultados superiores no tratamento de ruídos e artefatos específicos das imagens utilizadas no conjunto de testes. 
 
 \section{Metodologia e Adaptações}
 O desenvolvimento foi conduzido em ambiente Python. O algoritmo foi estruturado nas seguintes etapas, com divergências metodológicas e de parametrização em relação ao artigo base justificadas a seguir:
@@ -76,15 +78,48 @@ T(x,y) = m + k_{nick} \sqrt{\frac{\sum (p_i^2) - m^2}{N}}
 O algoritmo subdivide a imagem binarizada globalmente em blocos não sobrepostos de $7\times7$. Se a fração de pixels pretos excede $\mu + k_{smear}\sigma$, a região é classificada como mancha. O valor escolhido de $k_{smear} = 0,001$ difere do habitual estatístico (que seria mais conservador) para aumentar a sensibilidade da detecção de manchas (smears), forçando o algoritmo a usar o método de Nick em praticamente qualquer região suspeita de acúmulo de tinta.
 
 \subsection{Pós-processamento Morfológico Hit-Miss e Filtragem de Componentes}
-O artigo base sugere algoritmos de pós-processamento baseados em regras geométricas complexas para a limpeza da imagem. Nesta releitura, essa abordagem foi substituída por um conjunto de operações morfológicas via transformada \textit{Hit-Miss} aliada a uma rigorosa filtragem de componentes conexos, modificação escolhida por apresentar resultados superiores e maior robustez na limpeza de ruídos no nosso contexto de testes. As etapas projetadas para detecção e mitigação de anomalias são:
+O artigo base sugere alguns passos vagos para o pós processamento da imagem, mas não apresenta muitos detalhes dos métodos específicos utilizados para implementar as soluções. Nessa releitura, foram utilizadas operações morfológicas via transformada \textit{Hit-Miss} para remover buracos e pixels isolados, assim como corrigir leves artefatos de concavidade e convexidade produzidos pela binarização. aliada a uma rigorosa filtragem de componentes conexos. 
+
+Após isso, foi realizada a detecção dos componentes conexos e encontrado suas áreas, como feito no trabalho original, mas algumas mudanças tiveram de ser feitas para resultados mais coerentes serem obtidos. As etapas exatas de toda a pipeline de pós processamento são registrados abaixo:
 
 \begin{enumerate}
-    \item \textbf{Gaps e Dots (Pontos isolados e Buracos):} Remoção de falsos pixels de \textit{foreground} e preenchimento de pequenos buracos no texto utilizando matrizes específicas da transformada \textit{Hit-Miss}.
-    \item \textbf{Filtragem por Componentes Conexos (Substituição do Método Base):} Em vez das múltiplas etapas de verificação de vizinhança propostas na literatura original, adotou-se a remoção direta baseada em área. O algoritmo analisa todas as componentes e remove sumariamente aquelas com áreas inferiores a um limite estatístico restritivo $(\lambda \cdot \mu) / \sigma$, com $\lambda = 45$. Esta alteração substitui as regras originais por se mostrar muito mais eficaz na eliminação do ruído residual denso, especialmente aquele gerado pela limiarização de Nick nas áreas de manchas.
-    \item \textbf{Convexidades e Concavidades:} Foram criados bancos de kernels (Cima, Baixo, Esquerda, Direita) para suavizar o contorno dos caracteres, subtraindo convexidades de 1 pixel e adicionando concavidades.
+    \item \textbf{Gaps e Dots (Pontos isolados e Buracos):} Remoção de falsos pixels de \textit{foreground} e preenchimento de buracos de 1 pixel no texto utilizando matrizes específicas da transformada \textit{Hit-Miss}.
+    \item \textbf{Filtragem por Componentes Conexos:} O algoritmo utilizado analisa todas as componentes e remove sumariamente aquelas com áreas inferiores a um limite estatístico restritivo $(\lambda \cdot \mu) / \sigma$, onde $\mu$ é a média do tamanho das áreas dos componentes, $\sigma$ seu desvio padrão e $\lambda = 15$ uma constante empírica. No trabalho original, as equações propostas implicavam na remoção dos componentes de área maior que a expressão $(\lambda \cdot \mu) / \sigma$, porém a implementação através dessa lógica resultava na remoção quase inteira do texto em especial em casos de escrita cursiva, nos quais palavras inteiras formam um componente único. Devido à escassez de detalhes dessa etapa no artigo e à ausência de um repositório acessível, não se pode confirmar se essa lógica é intencional, ou resultado de um erro de transcrição, mas sua inversão resultou em notável aprimoramento da imagem final e, portanto, escolheu-se eliminar os componentes menores.
+    
+    \item \textbf{Convexidades e Concavidades:} Por fim, foram criados bancos de kernels que representavam concavidades e convexidades de um pixel em cada direção (Cima, Baixo, Esquerda, Direita). Essas matrizes foram utilizadas pela operação Hit-Miss suavizar o contorno dos caracteres e remover artefatos gerados pela binarização.
 \end{enumerate}
+
+\subsection{Métodos de Avaliação}
+
+Para avaliar o desempenho do algoritmo em sua binarização, foram  utilizadas quatro métricas principais, sendo feitas com comparação a\textit{ground truths} disponibilizadas junto às bases de dados utilizadas. As métricas utilizadas foram:
+
+\begin{enumerate}
+    \item \textbf{\textit{F-Measure}:} Uma medição padrão da acuracia de módelos representada pela fórmula:
+    
+    \[FM = \frac{2*Recall*Precision}{Recall+Precision}\] 
+
+    onde $Recall = \frac{TP}{TP+FN}$ e $Precision = \frac{TP}{TP+FP}$, sendo $TP$,$FN$ e $FP$ respectivamente os valores de verdadeiro positivo, falso negativo e falso positivo do modelo.
+
+    \item \textbf{\textit{pseudo F-Measure}:} Uma medida introduzida em \cite{pfm} e baseada o \textit{F-Measure}, mas que substitui Recall por pseudo-Recall $R_{ps}$ e Precision por pseudo-Precision $P_{ps}$. Essas medidas são baseadas na distância ao contorno dos caracteres da \textit{ground truth} e, no caso do pseudo-Recall, também é normalizado de acordo com a espessura do traço.
+
+    \item \textbf{\textit{Peak Signal to Noise Ratio (PSNR)}:} Uma medida que determina a semelhança entre duas imagens,  sendo $I$ e $I'$ duas imagens de dimensão $M$×$N$ e $C$ a diferença entre pixels do \textit{foreground} e \textit{background}, ela é definida como:
+
+    \[PSNR = 10log(\frac{C^2}{MSE})\]
+
+    onde \[MSE = \frac{\sum_{x=1}^{M}\sum_{y}^{n}(I(x,y) - I'(x,y)^2}{MN}\]
+    \item \textbf{\textit{Distance Reciprocal Distortion Metric (DRD)}:} Uma medida baseada na visão humana que mede a distorção visual em documentos, como usada em \cite{drd}. A distorção de todos os $S$ \textit{flipped pixels} é definida por:
+
+    \[DRD = \frac{\sum_{k=1}^{S}DRD_{k}}{NUBN}\]
+
+    Nessa expressão, $NUBN$ é o número de blocos $8$×$8$ não uniformes na imagem e $DRD_{k}$ é a distorção do k-ésimo pixel virado, calculado através da matriz normalizada $5$×$5$ de pesos $W_{NM}$, definida em \cite{drd}.
+
+    
+\end{enumerate}
+
 \section{Resultados e Discussão}
-O método proposto foi testado na base de imagens apresentada. O cálculo de contraste local aliado à decisão condicional entre Otsu e Multi-Otsu mostrou-se computacionalmente mais leve e eficiente que o TSMO original para as imagens do conjunto de dados.
+O método proposto foi testado na base de imagens H-DIBCO de 2014 \cite{hdibco2014}, composta por 10 imagens de documentos manuscritos, suas \textit{ground truths} e executáveis utilizados para avaliar o desempenho do algoritmo testado através das métricas previamente apresentadas. 
+
+O cálculo de contraste local aliado à decisão condicional entre Otsu e Multi-Otsu mostrou-se computacionalmente mais leve e eficiente que o TSMO original para as imagens do conjunto de dados.
 
 A Figura \ref{fig:h05} ilustra perfeitamente a necessidade da binarização híbrida e o papel crucial da binarização de Nick nas manchas (smear). Na binarização puramente global (Fig. \ref{fig:h05}b), grandes áreas de acúmulo de tinta ou variação de iluminação colapsam em manchas densas, ocultando completamente o texto. Ao identificar essas regiões (densidade $> \mu + k_{smear}\sigma$) e aplicar localmente a fórmula de Nick com nosso $k_{nick}=-0,05$ otimizado (Fig. \ref{fig:h05}c), o texto é resgatado do fundo escuro. Por fim, o pós-processamento Hit-Miss (Fig. \ref{fig:h05}d) elimina os resíduos pontuais e preserva a integridade estrutural da escrita.
 
@@ -125,11 +160,21 @@ A Figura \ref{fig:h05} ilustra perfeitamente a necessidade da binarização híb
 Caso o algoritmo fosse executado com os parâmetros sugeridos pelo artigo base (por exemplo, valores de $k_{nick}$ mais negativos e janelas maiores), notaríamos uma erosão excessiva dos caracteres resgatados nas áreas de mancha. A nossa parametrização compensa isso balanceando um $k_{nick}$ tolerante com uma limpeza morfológica posterior rigorosa. As imagens geradas pelo código permitem a validação visual dessas assunções perante a literatura base.
 
 \section{Conclusão}
-A releitura do sistema híbrido alcançou seus objetivos. A divergência consciente dos parâmetros (como no limiar de Nick e no limite estatístico de smear) combinada com a substituição do pós-processamento do artigo base por operações Hit-Miss, demonstrou ser uma adaptação extremamente eficaz. As evidências visuais comprovam a recuperação de informações essenciais em documentos gravemente manchados, consolidando a validade técnica das adaptações realizadas.
+A partir releitura do artigo, o intuito inicial foi obter resultados semelhantes aos apresentados Boudraa et al. (2019) \cite{boudraa2019}, ao qual inicialmente seguimos escrupulosamente sua metodologia. Ao realizarmos os testes com o banco de imagens citado (dataset), observou-se que alguns parâmetros e, principalmente a etapa de pós-processamento, exigiam ajustes para melhor adequação às características específicas das imagens avaliadas.
+Diante disto, foram investigados parâmetros e técnicas que favorecessem a legibilidade do texto e a preservação das informações relevantes para um futuro reconhecimento óptico de caracteres (OCR), processo este no qual se verificou que o algoritmo de Nick, apesar de eficiente na delimitação de traços de contorno, apresentou limitações na região do interior dos contornos, sobretudo em regiões de escrita mais espessa. Apesar deste fator, o método global mostrou bom desempenho e, em situações com manchas e desgastes acentuados, o método adaptativo de Nick desempenhou nestas situações potencial satisfatório, apesar de demandar correções.
 
+A adaptação consciente dos parâmetros, sobretudo no limiar do algoritmo de Nick e no critério estatístico de detecção de manchas, somada à substituição do pós-processamento original por operações Hit-Miss, demonstrou-se como solução eficaz para os testes realizados. Os resultados obtidos indicam recuperação satisfatória de informações em documentos gravemente degradados, evidencias da validade técnica das adaptações realizadas. 
+
+Aos trabalhos futuros, recomenda-se a reimplementação do algoritmo de Nick, de modo a sanar a preservação do interior dos traços em regiões com escrita mais espessa, além da exploração de técnicas de aprendizado profundo para aprimorar a detecção de manchas e o processo de binarização adaptativa.
 \begin{thebibliography}{00}
 \bibitem{boudraa2019}
 O. Boudraa, W. K. Hidouci, and D. Michelucci, ``Degraded Historical Documents Images Binarization Using a Combination of Enhanced Techniques,'' \textit{arXiv preprint arXiv:1901.09425}, 2019.
+\bibitem{hdibco2014}
+K. Ntirogiannis, B. Gatos and I. Pratikakis, "ICFHR2014 Competition on Handwritten Document Image Binarization (H-DIBCO 2014)," 2014 14th International Conference on Frontiers in Handwriting Recognition, Hersonissos, Greece, 2014, pp. 809-813, doi: 10.1109/ICFHR.2014.141.
+\bibitem{pfm}
+Chris Tensmeyer and Tony Martinez. 2020. Historical Document Image Binarization: A Review. SN Comput. Sci. 1, 3 (May 2020). https://doi.org/10.1007/s42979-020-00176-1
+\bibitem{drd}
+Lu, Haiping \& Kot, A.C. \& Shi, Y.Q.. (2004). Distance-Reciprocal Distortion Measure for Binary Document Images. IEEE Signal Processing Letters. 11. 228-231. 10.1109/LSP.2003.821748. 
 \end{thebibliography}
 
 \end{document}
