@@ -117,11 +117,11 @@ Para avaliar o desempenho do algoritmo em sua binarização, foram  utilizadas q
 \end{enumerate}
 
 \section{Resultados e Discussão}
-O método proposto foi testado na base de imagens H-DIBCO de 2014 \cite{hdibco2014}, composta por 10 imagens de documentos manuscritos, suas \textit{ground truths} e executáveis utilizados para avaliar o desempenho do algoritmo testado através das métricas previamente apresentadas. 
+O método proposto foi testado em algumas imagens mais simples de teste, mas também na base de imagens H-DIBCO de 2014 \cite{hdibco2014}, composta por 10 imagens de documentos manuscritos, suas \textit{ground truths} e executáveis utilizados para avaliar o desempenho do algoritmo testado através das métricas previamente apresentadas. 
 
-O cálculo de contraste local aliado à decisão condicional entre Otsu e Multi-Otsu mostrou-se computacionalmente mais leve e eficiente que o TSMO original para as imagens do conjunto de dados.
+À medida que os resultados foram considerados, foi possível concluir que, mesmo não sendo uma métrica principal, certos métodos apresentaram desempenho computacional melhor que outros sem apresentar perda em acurácia, o que auxiliou no desenvolvimento. Em um desses casos, por exemplo, o cálculo de contraste local aliado à decisão condicional entre Otsu e Multi-Otsu mostrou-se computacionalmente mais leve e eficiente que o TSMO original para as imagens do conjunto de nosso conjunto de dados.
 
-A Figura \ref{fig:h05} ilustra perfeitamente a necessidade da binarização híbrida e o papel crucial da binarização de Nick nas manchas (smear). Na binarização puramente global (Fig. \ref{fig:h05}b), grandes áreas de acúmulo de tinta ou variação de iluminação colapsam em manchas densas, ocultando completamente o texto. Ao identificar essas regiões (densidade $> \mu + k_{smear}\sigma$) e aplicar localmente a fórmula de Nick com nosso $k_{nick}=-0,05$ otimizado (Fig. \ref{fig:h05}c), o texto é resgatado do fundo escuro. Por fim, o pós-processamento Hit-Miss (Fig. \ref{fig:h05}d) elimina os resíduos pontuais e preserva a integridade estrutural da escrita.
+Quanto à qualidade em si da binarização produzida, os benefícios dos métodos utilizados comparados aos tradicionais foram exemplificadas por certas imagens em condições mais precárias. Por exemplo, a Figura \ref{fig:h05} ilustra perfeitamente a necessidade da binarização híbrida e o papel crucial da binarização de Nick nas manchas (smear). Na binarização puramente global (Fig. \ref{fig:h05}b), grandes áreas de acúmulo de tinta ou variação de iluminação colapsam em manchas densas, ocultando completamente o texto. Ao identificar essas regiões (densidade $> \mu + k_{smear}\sigma$) e aplicar localmente a fórmula de Nick com nosso $k_{nick}=-0,05$ otimizado (Fig. \ref{fig:h05}c), o texto é resgatado do fundo escuro. Por fim, o pós-processamento Hit-Miss (Fig. \ref{fig:h05}d) elimina os resíduos pontuais e preserva a integridade estrutural da escrita. Isso pode ser visto nas Figuras 1-4.
 
 \begin{figure}[htbp]
     \centering
@@ -157,7 +157,79 @@ A Figura \ref{fig:h05} ilustra perfeitamente a necessidade da binarização híb
     \label{fig:h05}
 \end{figure}
 
-Caso o algoritmo fosse executado com os parâmetros sugeridos pelo artigo base (por exemplo, valores de $k_{nick}$ mais negativos e janelas maiores), notaríamos uma erosão excessiva dos caracteres resgatados nas áreas de mancha. A nossa parametrização compensa isso balanceando um $k_{nick}$ tolerante com uma limpeza morfológica posterior rigorosa. As imagens geradas pelo código permitem a validação visual dessas assunções perante a literatura base.
+Caso o algoritmo fosse executado com os parâmetros sugeridos pelo artigo base (por exemplo, valores de $k_{nick}$ mais negativos e janelas maiores), notaríamos uma erosão excessiva dos caracteres resgatados nas áreas de mancha. A nossa parametrização compensa isso balanceando um $k_{nick}$ tolerante com uma limpeza morfológica posterior rigorosa. 
+
+Entretanto, foram percebidos alguns desafios quando aplicado nosso algoritmo sobre as imagens de H-DIBCO 2014 \cite{hdibco2014}. 
+
+Para a medição do desempenho, foram avaliadas as métricas para o processo para ambas a binarização padrão e a Nick. Os resultados desse processo para a binarização global e Nick, assim como os resultados consolidades de vários métodos apresentados no artigo original (Entre os quais \textit{Boudra} é o proposto pelos autores) são representados nas Figuras 6, 7 e 8 respectivamente.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.9\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Avaliacao/Tabela_Global.png}
+        \vspace{-0.2cm}
+        \caption*{Tabela das métricas da binarização sem método Nick}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.9\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Avaliacao/Tabela_Nick.png}
+        \vspace{-0.2cm}
+        \caption*Tabela das métricas da binarização com Nick
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.9\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]{Avaliacao/Tabela_Artigo.png}
+        \vspace{-0.2cm}
+        \caption*Tabela das métricas apresentadas no artigo original.
+    \end{minipage}
+\end{figure}
+
+Através desses resultados, é possível ver alguns pontos notáveis de divergência entre as metodologias utilizadas. Apesar da importância da abordagem Nick para lidar com manchas e outras anomalias nos documentos, nossa implementação utilizada possui, em média, um desempenho significativamente inferior para a base de dados H-DIBCO 2014.
+
+Esse padrão é alarmante, mas é importante compreender a raiz dessa discrepância, o que pode ser feito através da análise dos caso mais excepcionais. A imagem 6 e suas binarizações são visíveis nas figuras 9-11 e servem para demonstrar a falha fatal da implementação do método Nick realizada.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.8\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]{resultado_HDIBCO/H06_01_Original_Gray.png}
+        \vspace{-0.2cm}
+        \caption*{(a) Imagem Original}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.8\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]
+        {resultado_HDIBCO/H06_GPos_processada.png}
+        \vspace{-0.2cm}
+        \caption*{(b) Binarização Global}
+    \end{minipage}
+    \vspace{0.3cm}
+    
+    \begin{minipage}{0.8\columnwidth}
+        \centering
+        \includegraphics[width=\linewidth]{resultado_HDIBCO/H06_NPos_processada.png}
+        \vspace{-0.2cm}
+        \caption*{(c) Binarização de Nick}
+    \end{minipage}
+    \caption{Comparativo da imagem e suas binarizações}
+    \label{fig:h06-bin}
+\end{figure}
+
+Nesse caso, a \textit{F-measure} do métoo Nick foi a extremamente baixa 38.7276, comparada ao valor de 93.7172 da binarização global. Apesar desse caso ser extremo, ele demonstra que nossa implementação Nick sofre com escrita de traço mais espesso, preservando apenas seu contorno e não seu interior, o que afeta suas métricas significativamente.
+
+Apesar da causa exata dessa discrepância não ter sido encontrada diretamente, modificações nos parâmetros das operações, assim como usos de métodos de preenchimento poderiam aprimorar seu resultado e fazer sua métricas alcançarem ou ultrapassarem suas alternativas.
+
+Quanto à binarização globalizada, é possível notar que, para essa base de dados, seus resultados são incrivelmente professores. Apesar de não ultrapassar o método de \textit{Boudra} proposto no artigo, seu desempenho alcança e, em algumas métricas, supera o método \textit{Otsu}, o segundo melhor. Isso demonstra que foi possível replicar vários dos fatores que tornaram o algoritmo do artigo original eficiente, mesmo que certos aspectos não terem sido possíveis de recriar com precisão completa.
 
 \section{Conclusão}
 A partir releitura do artigo, o intuito inicial foi obter resultados semelhantes aos apresentados Boudraa et al. (2019) \cite{boudraa2019}, ao qual inicialmente seguimos escrupulosamente sua metodologia. Ao realizarmos os testes com o banco de imagens citado (dataset), observou-se que alguns parâmetros e, principalmente a etapa de pós-processamento, exigiam ajustes para melhor adequação às características específicas das imagens avaliadas.
