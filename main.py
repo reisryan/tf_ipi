@@ -315,7 +315,7 @@ def BinarizeImage(m):
         mean = statistics.mean(values)
         std_dev = statistics.stdev(values)
 
-        # Mantém apenas os componentes de áreas menores que essa expressão
+        # Mantém apenas os componentes de áreas maiores que essa expressão, para remover artefatos pequenos de ruído
         keep_labels = []
         for label, count in pixel_dict.items():
             if count > (lamb*mean)/std_dev:
