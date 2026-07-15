@@ -7,6 +7,11 @@ import statistics
 from sklearn.metrics import f1_score
 import doxapy
 
+# Caminho do path de uma imagem qualquer na pasta, usado quando o argumento da função é 0
+default_path = './Imagens_teste/H01.bmp'  
+
+# Caminho para a ground truth de uma imagem, necessário para obter métricas. Usado quando o argumento da função é 0
+default_gt = None                           
 
 # ==============================================================================
 # 0. Kernels usados no hit-miss do pós processamento
@@ -17,25 +22,24 @@ def HitMiss(img, shape):
 
 arrGap = np.array([[-1, -1, -1],
                    [-1, 1, -1],
-                   [-1, -1, -1]], dtype=np.float32)  # Array de gap
+                   [-1, -1, -1]], dtype=np.float32)  # Array de detectar convexidade
 
 arrDot = np.array([[1, 1, 1],
                    [1, -1, 1],
-                   [1, 1, 1]], dtype=np.float32)  # Array de detectar
+                   [1, 1, 1]], dtype=np.float32)  # Array de detectar convexidade
 
 arrconvU = np.array([
     [0, 0, 0, 0, 0,],
     [0, 1, 1, 1, 0],
     [0, 1, -1, 1, 0],
     [0, -1, -1, -1, 0],
-    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
-
+    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar convexidade
 arrconvD = np.array([
     [0, -1, -1, -1, 0],
     [0, -1, -1, -1, 0],
     [0, 1, -1, 1, 0],
     [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
+    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar convexidade
 
 
 arrconvL = np.array([
@@ -43,14 +47,14 @@ arrconvL = np.array([
     [0, 1, 1, -1, -1],
     [0, 1, -1, -1, -1],
     [0, 1, 1, -1, -1],
-    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar convexidade
 
 arrconvR = np.array([
     [0, 0, 0, 0, 0],
     [-1, -1, 1, 1, 0],
     [-1, -1, -1, 1, 0],
     [-1, -1, 1, 1, 0],
-    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar convexidade
 
 arrconv = [arrconvU, arrconvD, arrconvL, arrconvR]
 
@@ -59,14 +63,14 @@ arrconcU = np.array([
     [0, 1, 1, 1, 0],
     [0, -1, 1, -1, 0],
     [0, -1, -1, -1, 0],
-    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar ponto
+    [0, -1, -1, -1, 0]], dtype=np.float32)  # Array de detectar concavidade
 
 arrconcD = np.array([
     [0, -1, -1, -1, 0],
     [0, -1, -1, -1, 0],
     [0, -1, 1, -1, 0],
     [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar ponto
+    [0, 0, 0, 0, 0,]], dtype=np.float32)  # Array de detectar concavidade
 
 
 arrconcL = np.array([
@@ -74,33 +78,42 @@ arrconcL = np.array([
     [0, 1, -1, -1, -1],
     [0, 1, 1, -1, -1],
     [0, 1, -1, -1, -1],
-    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+    [0, 0, 0, 0, 0]], dtype=np.float32) # Array de detectar concavidade
 
 arrconcR = np.array([
     [0, 0, 0, 0, 0],
     [-1, -1, 1, 1, 0],
     [-1, -1, -1, 1, 0],
     [-1, -1, 1, 1, 0],
-    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar ponto
+    [0, 0, 0, 0, 0]], dtype=np.float32)  # Array de detectar concavidade
 
 arrconc = [arrconcU, arrconcD, arrconcL, arrconcR]
 
-def BinarizeImage(m):
+def BinarizeImage(m,do_metrics = True):
     # ==============================================================================
     # 1. CRIAÇÃO DA PASTA DE RESULTADOS E LEITURA DA IMAGEM
     # ==============================================================================
     # Configuração do diretório de saída para salvar os resultados intermediários e finais.
     starttime = time.time()
-    output_dir = './resultado_HDIBCO'
-
-    dig1 = m // 10
-    dig2 = m % 10
-    image_path = f'./Avaliacao/original_images/H{dig1}{dig2}.png'
-    print(image_path)
-    gt = cv.imread(f'./Avaliacao/GT/H{dig1}{dig2}_estGT.tiff')
     
-    gt = cv.cvtColor(gt, cv.COLOR_BGR2GRAY).astype(np.uint8)
-    p_weights, r_weights = doxapy.generate_pseudo_weights(gt)
+    output_dir = None
+    image_path = None
+    gt = None
+    if m > 0:
+        dig1 = m // 10
+        dig2 = m % 10
+        image_path = f'./Avaliacao/original_images/H{dig1}{dig2}.png'
+        print(image_path)
+        gt = cv.imread(f'./Avaliacao/GT/H{dig1}{dig2}_estGT.tiff')
+        output_dir = './resultado_HDIBCO'
+    else:
+        image_path = default_path
+        gt = default_gt
+        output_dir = './resultados_binarizacao_nick'
+    
+    if gt is not None:
+        gt = cv.cvtColor(gt, cv.COLOR_BGR2GRAY).astype(np.uint8)
+        p_weights, r_weights = doxapy.generate_pseudo_weights(gt)
     
     # Leitura da imagem e conversão para escala de cinza.
     # O casting para float32 (gf) é necessário para evitar estouro de memória (overflow/underflow)
@@ -353,13 +366,13 @@ def BinarizeImage(m):
         finaltime = time.time()
         time_elapsed = basetime + finaltime-starttime
 
-
-        scores = doxapy.calculate_performance(imagem_final,gt, p_weights, r_weights)
-        fm = scores['fm']
-        psnr = scores['psnr']
-        drd = scores['drdm']
-        pfm = scores['pseudo_fm']
-        #print("Image: ",image_path,"\nTime Elapsed: ",time_elapsed,"\nF-Measure: ",fm,"\nPseudo F-measure",pfm,"\nPeaks Signal-to-Noise-Ratio: ",psnr, "\nDistance Reciprocal Distortion: ",drd,"\n")
+        if gt is not None and do_metrics:
+            scores = doxapy.calculate_performance(imagem_final,gt, p_weights, r_weights)
+            fm = scores['fm']
+            psnr = scores['psnr']
+            drd = scores['drdm']
+            pfm = scores['pseudo_fm']
+            print("Image: ",image_path,"\nTime Elapsed: ",time_elapsed,"\nF-Measure: ",fm,"\nPseudo F-measure",pfm,"\nPeaks Signal-to-Noise-Ratio: ",psnr, "\nDistance Reciprocal Distortion: ",drd,"\n")
         imagens_finais.append(imagem_final.copy())
 
     # ==============================================================================
@@ -378,5 +391,5 @@ def BinarizeImage(m):
     print(f"Resultados salvos com sucesso na pasta: {output_dir}")
 
 if __name__ == "__main__":
-    BinarizeImage(1)
+    BinarizeImage(0,True)
 
