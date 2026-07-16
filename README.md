@@ -1,6 +1,7 @@
-# tf_ipi
+# Trabalho Final de Introdução ao Processamento de Imagens - Semestre 2026.1 - Universidade de Brasília
 
-
+### Repositório do Github: https://github.com/reisryan/tf_ipi
+### Vídeo de Explicação: https://www.youtube.com/watch?v=smk04YFcVz4
 Esse repositório armazena o código e arquivos relacionados ao projeto final do grupo composto por:
 - Mateus Elias de Macedo - 222011561
 - Ryan Reis Fontenele - 211036132
